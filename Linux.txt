@@ -1,0 +1,234 @@
+1. Используя команду cat в терминале операционной системы Linux, создать
+два файла Домашние животные (заполнив файл собаками, кошками,
+хомяками) и Вьючные животными заполнив файл Лошадьми, верблюдами и
+ослы), а затем объединить их. Просмотреть содержимое созданного файла.
+Переименовать файл, дав ему новое имя (Друзья человека).
+
+$ cat > 'Домашние животные'
+
+собаки
+кошки
+хомяки
+
+$ cat > 'Вьючные животные'
+
+лошади
+верблюды
+ослы
+
+$ cat 'Вьючные животные' 'Домашние животные' > 'Общий файл' 
+
+$ cat 'Общий файл'
+
+лошади
+верблюды
+ослы
+собаки
+кошки
+хомяки
+
+$ mv -v 'Общий файл' 'Друзья человека'
+
+переименован 'Общий файл' -> 'Друзья человека'
+
+
+2. Создать директорию, переместить файл туда.
+
+$ mkdir Final_work
+
+$ mv -v 'Друзья человека' Final_work/
+
+переименован 'Друзья человека' -> 'Final_work/Друзья человека'
+
+
+3. Подключить дополнительный репозиторий MySQL. Установить любой пакет
+из этого репозитория.
+
+$ sudo apt update
+
+$ sudo apt upgrade -y
+
+$ sudo apt install mysql-server -y
+
+$ mysql --version
+
+mysql  Ver 8.0.35-0ubuntu0.22.04.1 for Linux on x86_64 ((Ubuntu))
+
+
+4. Установить и удалить deb-пакет с помощью dpkg.
+
+$ wget https://download.virtualbox.org/virtualbox/7.0.12/virtualbox-7.0_7.0.12-159484~Ubuntu~jammy_amd64.deb
+
+$ sudo dpkg -i virtualbox-7.0_7.0.12-159484~Ubuntu~jammy_amd64.deb
+
+$ sudo dpkg -r virtualbox-7.0
+
+
+5. Выложить историю команд в терминале ubuntu
+
+$ history
+
+
+6. Нарисовать диаграмму, в которой есть класс родительский класс, домашние
+животные и вьючные животные, в составы которых в случае домашних
+животных войдут классы: собаки, кошки, хомяки, а в класс вьючные животные
+войдут: Лошади, верблюды и ослы).
+
+См. файл Diagram.pdf
+
+
+7. В подключенном MySQL репозитории создать базу данных “Друзья
+человека”
+
+
+$ sudo mysql -u root
+
+[sudo] пароль для nikita: 
+
+mysql> SHOW DATABASES;
+
+mysql> CREATE DATABASE people_friends;
+
+
+8. Создать таблицы с иерархией из диаграммы в БД
+
+mysql> USE people_friends;
+
+mysql> CREATE TABLE home_animals
+    -> (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> genus VARCHAR(50) NOT NULL
+    -> );
+
+mysql> CREATE TABLE pack_animals
+    -> (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> genus VARCHAR(50) NOT NULL
+    -> );
+
+mysql> CREATE TABLE dogs
+    -> (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> name VARCHAR(50) NOT NULL,
+    -> commands TEXT,
+    -> birthday DATE,
+    -> category INT,
+    -> FOREIGN KEY (category) REFERENCES home_animals (id) ON DELETE CASCADE ON UPDATE CASCADE
+    -> );
+
+mysql> CREATE TABLE cats
+    -> (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> name VARCHAR(50) NOT NULL,
+    -> commands TEXT,
+    -> birthday DATE,
+    -> category INT,
+    -> FOREIGN KEY (category) REFERENCES home_animals (id) ON DELETE CASCADE ON UPDATE CASCADE
+    -> );
+
+mysql> CREATE TABLE hamsters
+    -> (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> name VARCHAR(50) NOT NULL,
+    -> commands TEXT,
+    -> birthday DATE,
+    -> category INT,
+    -> FOREIGN KEY (category) REFERENCES home_animals (id) ON DELETE CASCADE ON UPDATE CASCADE
+    -> );
+
+mysql> CREATE TABLE horses
+    -> (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> name VARCHAR(50) NOT NULL,
+    -> commands TEXT,
+    -> birthday DATE,
+    -> category INT,
+    -> FOREIGN KEY (category) REFERENCES pack_animals (id) ON DELETE CASCADE ON UPDATE CASCADE
+    -> );
+
+mysql> CREATE TABLE camels
+    -> (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> name VARCHAR(50) NOT NULL,
+    -> commands TEXT,
+    -> birthday DATE,
+    -> category INT,
+    -> FOREIGN KEY (category) REFERENCES pack_animals (id) ON DELETE CASCADE ON UPDATE CASCADE
+    -> );
+
+mysql> CREATE TABLE donkeys
+    -> (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> name VARCHAR(50) NOT NULL,
+    -> commands TEXT,
+    -> birthday DATE,
+    -> category INT,
+    -> FOREIGN KEY (category) REFERENCES pack_animals (id) ON DELETE CASCADE ON UPDATE CASCADE
+    -> );
+
+
+9. Заполнить низкоуровневые таблицы именами(животных), командами
+которые они выполняют и датами рождения
+
+mysql> INSERT home_animals (genus) VALUES ('dogs'), ('cats'), ('hamsters');
+
+mysql> INSERT pack_animals (genus) VALUES ('horses'), ('camels'), ('donkeys');
+
+mysql> INSERT dogs (name, commands, birthday, category) VALUES ('Шарик', 'Лапу!', "03.05.2023", 1), ('Бобик', 'Сидеть!', "03.11.2022", 1);
+
+mysql> INSERT cats (name, commands, birthday, category) VALUES ('Мурзик', 'Кис-кис!', "02.05.2021", 2), ('Ева', '', "04.05.2020", 2);
+
+mysql> INSERT hamsters (name, commands, birthday, category) VALUES ('Буба', '', "03.07.2022", 3), ('Хуба', NULL, "21.01.2023", 3);
+
+mysql> INSERT horses (name, commands, birthday, category) VALUES ('Пегас', 'Брр! Бегом!', "30.09.2021", 1), ('Леголас', 'Бегом! Ко-мне!', "25.08.2019", 1);
+
+mysql> INSERT camels (name, commands, birthday, category) VALUES ('Горбатый',  'Ко-мне!', "23.11.2018", 2), ('Вася', 'Повернись', "01.01.2019", 2);
+
+mysql> INSERT donkeys (name, commands, birthday, category) VALUES ('Моисей',  '', "05.05.2020", 3), ('Иа', NULL, "06.06.2021", 3);
+
+
+10. Удалив из таблицы верблюдов, т.к. верблюдов решили перевезти в другой
+питомник на зимовку. Объединить таблицы лошади, и ослы в одну таблицу
+
+mysql> DELETE FROM camels;
+
+mysql> SELECT * FROM horses
+    -> UNION
+    -> SELECT * FROM donkeys;
+
+
+11.Создать новую таблицу “молодые животные” в которую попадут все
+животные старше 1 года, но младше 3 лет и в отдельном столбце с точностью
+до месяца подсчитать возраст животных в новой таблице
+
+CREATE TABLE young_animals AS 
+(SELECT temp.name, temp.commands, temp.birthday, temp.category, (TIMESTAMPDIFF(MONTH, temp.birthday, CURRENT_DATE())) AS age_in_months 
+FROM 
+(SELECT * FROM horses UNION SELECT * FROM camels UNION SELECT * FROM donkeys UNION SELECT * FROM dogs UNION SELECT * FROM cats UNION SELECT * FROM hamsters) AS temp 
+HAVING (age_in_months > 12 AND age_in_months < 36));
+
+
+12. Объединить все таблицы в одну, при этом сохраняя поля, указывающие на
+прошлую принадлежность к старым таблицам.
+
+(SELECT t1.name, t1.commands, t1.birthday, home_animals.genus
+FROM
+(
+SELECT * FROM dogs
+UNION
+SELECT * FROM cats
+UNION
+SELECT * FROM hamsters
+) AS t1
+INNER JOIN home_animals ON t1.category = home_animals.id)
+UNION
+(SELECT t2.name, t2.commands, t2.birthday, pack_animals.genus
+FROM
+(
+SELECT * FROM horses
+UNION
+SELECT * FROM camels
+UNION
+SELECT * FROM donkeys
+) AS t2
+INNER JOIN pack_animals ON t2.category = pack_animals.id);
