@@ -1,10 +1,15 @@
 package Presenters;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import Models.Counter;
 import Models.HomeAnimal;
 import Models.Model;
+import Models.UncorrectDataException;
 import Views.ConsoleView;
 
 public class Presenter {
@@ -25,30 +30,42 @@ public class Presenter {
             Integer numberAnimal;
             switch (act) {
                 case 1:
-                    numberAnimal = view.GetAction("Кого добавляем?\n" +
-                        "1 - Собаку\n" +
-                        "2 - Кошку\n" +
-                        "3 - Хомяка\n" +
-                        "4 - Назад в главное меню");
-                    switch (numberAnimal) {
-                        case 1:
-                        case 2:
-                        case 3:
-                            String name = view.InputData("Как зовут Вашего друга?");
-                            List<String> commands = view.GetCommands("Сколько команд знает Ваш друг?");
-                            String birthday = view.InputData("Когда у него день рождения? Введите дату в формате DD.MM.YYYY");
-                            model.AddAnimal(numberAnimal, name, commands, birthday);
-                            view.OutputData("Питомец был успешно добавлен\n");
-                            break;
-                        case 4:
-                            view.OutputData("Возврат в главное меню\n");
-                            break;
+                    try(Counter counter = new Counter()) {
+                        numberAnimal = view.GetAction("Кого добавляем?\n" +
+                            "1 - Собаку\n" +
+                            "2 - Кошку\n" +
+                            "3 - Хомяка\n" +
+                            "4 - Назад в главное меню");
+                        switch (numberAnimal) {
+                            case 1:
+                            case 2:
+                            case 3:
+                                String name = view.InputData("Как зовут Вашего друга?");
+                                List<String> commands = view.GetCommands("Сколько команд знает Ваш друг?");
+                                String birthday = view.InputData("Когда у него день рождения? Введите дату в формате DD.MM.YYYY");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                                try {
+                                    Date date = dateFormat.parse(birthday);
+                                    model.AddAnimal(numberAnimal, name, commands, date);
+                                } catch (ParseException e) {
+                                    throw new UncorrectDataException("Неверный формат данных");
+                                }
+                                view.OutputData("Питомец был успешно добавлен\n");
+                                counter.add();
+                                break;
+                            case 4:
+                                view.OutputData("Возврат в главное меню\n");
+                                break;
 
-                        default:
-                            view.OutputData("Мы не можем добавить такого животного, перепроверьте ввод.\n");
-                            break;
+                            default:
+                                view.OutputData("Мы не можем добавить такого животного, перепроверьте ввод.\n");
+                                break;
+                        }
+                        break;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        break;
                     }
-                    break;
                 
                 case 2:
                     numberAnimal = view.GetAction("Какое животное мы ищем?\n" +

@@ -1,10 +1,11 @@
 package Models;
+import java.util.Date;
 import java.util.List;
 
 public abstract class HomeAnimal implements PeopleFriend{
     protected String name;
     protected List<String> commands;
-    protected String birthday;
+    protected Date birthday;
     @Override
     public String GetName() {
         return name;
@@ -14,7 +15,7 @@ public abstract class HomeAnimal implements PeopleFriend{
         return commands;
     }
     @Override
-    public String GetBirthday() {
+    public Date GetBirthday() {
         return birthday;
     }
     @Override

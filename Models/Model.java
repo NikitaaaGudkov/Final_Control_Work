@@ -1,6 +1,7 @@
 package Models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Model {
@@ -10,7 +11,7 @@ public class Model {
         animals = new ArrayList<>();
     }
 
-    public void AddAnimal(Integer type, String name, List<String> command, String birthday)
+    public void AddAnimal(Integer type, String name, List<String> command, Date birthday)
     {
         HomeAnimal animal = null;
         switch (type) {

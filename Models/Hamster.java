@@ -1,8 +1,9 @@
 package Models;
+import java.util.Date;
 import java.util.List;
 
 public class Hamster extends HomeAnimal{
-    public Hamster(String name, List<String> commands, String birthday) {
+    public Hamster(String name, List<String> commands, Date birthday) {
         this.name = name;
         this.commands = commands;
         this.birthday = birthday;
